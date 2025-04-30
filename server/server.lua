@@ -4,12 +4,14 @@ local VORPcore = exports.vorp_core:GetCore()
 
 AddEventHandler("vorp:playerJobGradeChange",function(source, newjobgrade,oldjobgrade)
     local src = source
-    TriggerClientEvent(src,'mms-society:client:updateplayerdata')
+    print('GradeChange')
+    TriggerClientEvent('mms-society:client:updateplayerdata',src)
 end)
 
 AddEventHandler("vorp:playerJobChange", function(source, newjob,oldjob)
     local src = source
-    TriggerClientEvent(src,'mms-society:client:updateplayerdata')
+    print('JobChange')
+    TriggerClientEvent('mms-society:client:updateplayerdata',src)
 end)
 
 ---- Get Player Data
@@ -71,6 +73,7 @@ RegisterServerEvent('mms-society:server:setbosslocation',function(BossPosX,BossP
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink,_U('BossPositionSet'), Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
+        TriggerClientEvent('mms-society:client:updateplayerdata',src)
     end
 end)
 
@@ -88,6 +91,7 @@ RegisterServerEvent('mms-society:server:setstoragelocation',function(StoragePosX
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink,_U('StorageSet'), Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
+        TriggerClientEvent('mms-society:client:updateplayerdata',src)
     end
 end)
 

@@ -500,7 +500,10 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
     InviteText = BossMenuPage4:RegisterElement('textdisplay', {
         value = _U('MakeSureYouCreatedRank'),
         style = {
-            ['color'] = 'orange'
+            ['font-size'] = '16px',
+            ['font-weight'] = 'bold',
+            ['color'] = 'orange',
+            
         }
     })
     local InputRank = ''
@@ -593,7 +596,11 @@ AddEventHandler('mms-society:client:reciveledger',function (Balance)
     })
     LedgerAmount = BossMenuPage6:RegisterElement('textdisplay', {
         value = _U('LedgerAmountText') .. Balance .. ' $',
-        style = {}
+        style = {
+            ['font-size'] = '16px',
+            ['font-weight'] = 'bold',
+            ['color'] = 'orange',
+        }
     })
     local InputAmount = ''
     BossMenuPage6:RegisterElement('input', {
@@ -681,7 +688,12 @@ elseif LedgerOpen then
     })
     LedgerAmount = BossMenuPage6:RegisterElement('textdisplay', {
         value = _U('LedgerAmountText') .. Balance .. ' $',
-        style = {}
+        style = {
+            ['font-size'] = '16px',
+            ['font-weight'] = 'bold',
+            ['color'] = 'orange',
+            
+        }
     })
     local InputAmount = ''
     BossMenuPage6:RegisterElement('input', {
@@ -785,7 +797,10 @@ AddEventHandler('mms-society:client:reciveranks',function (RankResult)
         v.rank = BossMenuPage3:RegisterElement('textdisplay', {
             value = displaydata,
             style = {
-                ['color'] = 'orange'
+                ['font-size'] = '16px',
+                ['font-weight'] = 'bold',
+                ['color'] = 'orange',
+                
             }
         })
     end
@@ -869,7 +884,10 @@ elseif RanksManage then
         v.rank = BossMenuPage3:RegisterElement('textdisplay', {
             value = displaydata,
             style = {
-                ['color'] = 'orange'
+                ['font-size'] = '16px',
+                ['font-weight'] = 'bold',
+                ['color'] = 'orange',
+                
             }
         })
     end
