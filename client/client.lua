@@ -332,6 +332,16 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
         end)
     end
     BossMenuPage1:RegisterElement('button', {
+        label =  _U('LeaveCompany'),
+        style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+    }, function()
+        TriggerEvent('mms-society:client:LeaveJob')
+    end)
+    BossMenuPage1:RegisterElement('button', {
         label =  _U('CloseBossMenu'),
         style = {
         ['background-color'] = '#FF8C00',
@@ -565,6 +575,13 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
     })
 
 
+end)
+
+-- Leave Job
+
+RegisterNetEvent('mms-society:client:LeaveJob')
+AddEventHandler('mms-society:client:LeaveJob',function ()
+    TriggerServerEvent('mms-society:server:LeaveJob')
 end)
 
 -- Get Ledger from DB

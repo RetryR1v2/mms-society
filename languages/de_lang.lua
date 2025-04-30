@@ -49,4 +49,5 @@ Locales["de_lang"] = {
     NotEnoghMoney = 'Nicht genug auf dem Konto',
     Withdraw = 'Auszahlen',
     Deposit = 'Einzahlen',
+    LeaveCompany = 'Kündigen',
 }

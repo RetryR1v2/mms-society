@@ -1,6 +1,7 @@
 Config = {}
 
 Config.Debug = true
+
 -----------------------------------------------------------------------------------
 ----------------------------------Webhook Settings---------------------------------
 -----------------------------------------------------------------------------------
@@ -33,3 +34,9 @@ Config.BlipSpriteBoss = 'blip_shop_store'
 Config.ShowStorageBlip = true
 Config.BlipSpriteStorage = 'blip_chest'
 Config.StorageSize = 5000
+
+-- Default Job if you leave your Job or get Fired
+
+Config.DefaultJob = 'unemployed'
+Config.DefaultLabel = 'Unemployed'
+Config.DefaultGrade = 0

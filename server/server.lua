@@ -288,3 +288,22 @@ RegisterServerEvent('mms-society:server:Deposit',function (InputAmount)
         end
     end
 end)
+
+
+-- LeaveJob
+
+RegisterServerEvent('mms-society:server:LeaveJob', function ()
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local Job = Character.job
+    Character.setJob(Config.DefaultJob)
+    Character.setJobGrade(Config.DefaultGrade)
+    Character.setJobLabel(Config.DefaultLabel)
+    for h,v in ipairs(GetPlayers()) do
+        local AllCharacters = VORPcore.getUser(v).getUsedCharacter
+        local AllJob = AllCharacters.job
+        if AllJob == Job then
+            TriggerClientEvent('mms-society:client:updateplayerdata',v)
+        end
+    end
+end)
