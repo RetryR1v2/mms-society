@@ -6,6 +6,7 @@ local FeatherMenu =  exports['feather-menu'].initiate()
 ------ LOCALS
 local LedgerOpen = false
 local RanksManage = false
+local PlayerManage = false
 local ImBoss = false
 local ImStorage = false
 local ImCash = false
@@ -277,6 +278,16 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
         BossMenuPage4.RouteTo()
     end)
     BossMenuPage1:RegisterElement('button', {
+        label = _U('ManagePlayers'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerEvent('mms-society:client:GetEmployers')
+    end)
+    BossMenuPage1:RegisterElement('button', {
         label = _U('SetBossLocation'),
         style = {
         ['background-color'] = '#FF8C00',
@@ -340,6 +351,7 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
             },
     }, function()
         TriggerEvent('mms-society:client:LeaveJob')
+        BossMenu:Close({ })
     end)
     BossMenuPage1:RegisterElement('button', {
         label =  _U('CloseBossMenu'),
@@ -609,6 +621,10 @@ AddEventHandler('mms-society:client:reciveledger',function (Balance)
     ---------------- Boss Menu Seite 6 -------------------
     ------------------------------------------------------
     if not LedgerOpen then
+        LedgerOpen = true
+    elseif LedgerOpen then
+        BossMenuPage6:UnRegister()
+    end
     BossMenuPage6 = BossMenu:RegisterPage('seite6')
     BossMenuPage6:RegisterElement('header', {
         value = _U('BossMenu'),
@@ -697,101 +713,7 @@ AddEventHandler('mms-society:client:reciveledger',function (Balance)
         ['color'] = 'orange',
         }
     })
-    LedgerOpen = true
     BossMenuPage6:RouteTo()
-elseif LedgerOpen then
-    BossMenuPage6:UnRegister()
-    BossMenuPage6 = BossMenu:RegisterPage('seite3')
-    BossMenuPage6:RegisterElement('header', {
-        value = _U('BossMenu'),
-        slot = 'header',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    BossMenuPage6:RegisterElement('line', {
-        slot = 'header',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    LedgerAmount = BossMenuPage6:RegisterElement('textdisplay', {
-        value = _U('LedgerAmountText') .. Balance .. ' $',
-        style = {
-            ['font-size'] = '16px',
-            ['font-weight'] = 'bold',
-            ['color'] = 'orange',
-            
-        }
-    })
-    local InputAmount = ''
-    BossMenuPage6:RegisterElement('input', {
-        label = _U('EnterAmount'),
-        placeholder = "0 $",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        InputAmount = data.value
-    end)
-    BossMenuPage6:RegisterElement('button', {
-        label =  _U('Deposit'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        TriggerEvent('mms-society:client:Deposit',InputAmount)
-    end)
-    BossMenuPage6:RegisterElement('button', {
-        label =  _U('Withdraw'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        TriggerEvent('mms-society:client:Withdraw',InputAmount)
-    end)
-    BossMenuPage6:RegisterElement('button', {
-        label =  _U('Back'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        BossMenuPage1:RouteTo()
-    end)
-    BossMenuPage6:RegisterElement('button', {
-        label =  _U('CloseBossMenu'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        BossMenu:Close({ })
-    end)
-    BossMenuPage6:RegisterElement('subheader', {
-        value = _U('BossMenu'),
-        slot = 'footer',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    BossMenuPage6:RegisterElement('line', {
-        slot = 'footer',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    BossMenuPage6:RouteTo()
-end
 end)
 
 --- Get Ranks from DB
@@ -807,93 +729,10 @@ AddEventHandler('mms-society:client:reciveranks',function (RankResult)
     ---------------- Boss Menu Seite 3 -------------------
     ------------------------------------------------------
     if not RanksManage then
-    BossMenuPage3 = BossMenu:RegisterPage('seite3')
-    BossMenuPage3:RegisterElement('header', {
-        value = _U('BossMenu'),
-        slot = 'header',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    BossMenuPage3:RegisterElement('line', {
-        slot = 'header',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    for i,v in ipairs(RankResult) do
-        local displaydata = _U('JobNameLabel') .. v.name .. _U('JobLabelLabel') .. v.ranklabel .. _U('JobRankLabel') .. v.rank
-        v.rank = BossMenuPage3:RegisterElement('textdisplay', {
-            value = displaydata,
-            style = {
-                ['font-size'] = '16px',
-                ['font-weight'] = 'bold',
-                ['color'] = 'orange',
-                
-            }
-        })
+        RanksManage = true
+    elseif RanksManage then
+        BossMenuPage3:UnRegister()
     end
-    local InputRank = ''
-    BossMenuPage3:RegisterElement('input', {
-        label = _U('EnterRank'),
-        placeholder = "",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        InputRank = data.value
-    end)
-    BossMenuPage3:RegisterElement('button', {
-        label =  _U('DeleteRank'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        TriggerEvent('mms-society:client:bossdeleterank',InputRank)
-        BossMenu:Close({ })
-    end)
-    BossMenuPage3:RegisterElement('button', {
-        label =  _U('Back'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        BossMenuPage1:RouteTo()
-    end)
-    BossMenuPage3:RegisterElement('button', {
-        label =  _U('CloseBossMenu'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        BossMenu:Close({ })
-    end)
-    BossMenuPage3:RegisterElement('subheader', {
-        value = _U('BossMenu'),
-        slot = 'footer',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    BossMenuPage3:RegisterElement('line', {
-        slot = 'footer',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    RanksManage = true
-    BossMenuPage3:RouteTo()
-elseif RanksManage then
-    BossMenuPage3:UnRegister()
     BossMenuPage3 = BossMenu:RegisterPage('seite3')
     BossMenuPage3:RegisterElement('header', {
         value = _U('BossMenu'),
@@ -909,7 +748,13 @@ elseif RanksManage then
         }
     })
     for i,v in ipairs(RankResult) do
-        local displaydata = _U('JobNameLabel') .. v.name .. _U('JobLabelLabel') .. v.ranklabel .. _U('JobRankLabel') .. v.rank
+        local Boss = ""
+        if v.isboss == 1 then Boss = _U('Yes') else Boss = _U('No') end
+        local Ledger = ""
+        if v.canwithdraw == 1 then Ledger = _U('Yes') else Ledger = _U('No') end
+        local Storage = ""
+        if v.storageaccess == 1 then Storage = _U('Yes') else Storage = _U('No') end
+        local displaydata = _U('JobLabelLabel') .. v.ranklabel .. _U('JobRankLabel') .. v.rank .. _U('IsRankBoss') .. Boss .. _U('CanRankLedged') .. Ledger .. _U('CanRankStorage') .. Storage
         v.rank = BossMenuPage3:RegisterElement('textdisplay', {
             value = displaydata,
             style = {
@@ -978,7 +823,132 @@ elseif RanksManage then
         }
     })
     BossMenuPage3:RouteTo()
-end
+end)
+
+RegisterNetEvent('mms-society:client:ReciveEmployers')
+AddEventHandler('mms-society:client:ReciveEmployers',function (EmployerResult)
+
+    ------------------------------------------------------
+    ---------------- Boss Menu Seite 5 -------------------
+    ------------------------------------------------------
+    if not PlayerManage then
+        PlayerManage = true
+    elseif PlayerManage then
+        BossMenuPage5:UnRegister()
+    end
+    BossMenuPage5 = BossMenu:RegisterPage('seite5')
+    BossMenuPage5:RegisterElement('header', {
+        value = _U('BossMenu'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BossMenuPage5:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    for i,v in ipairs(EmployerResult) do
+        local displaydata = _U('EmployedID') .. v.charidentifier .. _U('Employer') .. v.firstname .. ' ' .. v.lastname .. _U('HasRank') .. v.jobgrade
+        v.charidentifier = BossMenuPage5:RegisterElement('textdisplay', {
+            value = displaydata,
+            style = {
+                ['font-size'] = '16px',
+                ['font-weight'] = 'bold',
+                ['color'] = 'orange',
+                
+            }
+        })
+    end
+    local InputID = ''
+    BossMenuPage5:RegisterElement('input', {
+        label = _U('EnterID'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        InputID = data.value
+    end)
+    BossMenuPage5:RegisterElement('button', {
+        label =  _U('UpRank'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerServerEvent('mms-society:server:UpRank',InputID)
+        BossMenu:Close({ })
+    end)
+    BossMenuPage5:RegisterElement('button', {
+        label =  _U('DeRank'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerServerEvent('mms-society:server:DeRank',InputID)
+        BossMenu:Close({ })
+    end)
+    BossMenuPage5:RegisterElement('button', {
+        label =  _U('FireEmployer'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerServerEvent('mms-society:server:FireEmplyoer',InputID)
+        BossMenu:Close({ })
+    end)
+    BossMenuPage5:RegisterElement('button', {
+        label =  _U('Back'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BossMenuPage1:RouteTo()
+    end)
+    BossMenuPage5:RegisterElement('button', {
+        label =  _U('CloseBossMenu'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BossMenu:Close({ })
+    end)
+    BossMenuPage5:RegisterElement('subheader', {
+        value = _U('BossMenu'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BossMenuPage5:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BossMenuPage5:RouteTo()
+end)
+
+-- Get Employers
+
+RegisterNetEvent('mms-society:client:GetEmployers')
+AddEventHandler('mms-society:client:GetEmployers',function()
+    TriggerServerEvent('mms-society:server:GetEmployers')
 end)
 
 --- Create Job

@@ -23,6 +23,10 @@
 - Initial Release Version 1.1.0
 - 1.1.1 Added Leave Job Option
 - 1.1.2 Changed Invite Player Method from ClosestPlayer to PlayerID if More Players Next to you you cant Invite the wrong now.
+- 1.1.3
+- Added Employer Management
+- Optimized Menu Code
+- Optimized Rank Management you now see what the rang can do the Rights
 
 # installation 
 

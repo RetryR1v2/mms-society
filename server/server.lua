@@ -125,6 +125,18 @@ RegisterServerEvent('mms-society:server:bosscreaterank',function(InputRank,Input
     end
 end)
 
+-- Get Employers from DB
+
+RegisterServerEvent('mms-society:server:GetEmployers',function()
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local job = Character.job
+    local EmployerResult = MySQL.query.await("SELECT * FROM characters WHERE job=@job", { ["@job"] = job})
+    if #EmployerResult > 0 then
+        TriggerClientEvent('mms-society:client:ReciveEmployers',src,EmployerResult)
+    end
+end)
+
 ---- Get Ranks from DB
 
 RegisterServerEvent('mms-society:server:getranks',function ()
@@ -304,5 +316,82 @@ RegisterServerEvent('mms-society:server:LeaveJob', function ()
         if AllJob == Job then
             TriggerClientEvent('mms-society:client:updateplayerdata',v)
         end
+    end
+end)
+
+-- UpRank Employer
+
+RegisterServerEvent('mms-society:server:UpRank',function(InputID)
+    local src = source
+    if InputID ~= "" then
+        local CharID = tonumber(InputID)
+        local GetEmployerData = MySQL.query.await("SELECT * FROM characters WHERE charidentifier=@charidentifier", { ["@charidentifier"] = CharID})
+        if #GetEmployerData > 0 then
+            Employer = GetEmployerData[1]
+            local CurrentRank = Employer.jobgrade
+            local CurrentJob = Employer.job
+            local NewRank = CurrentRank + 1
+            MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{NewRank, CharID})
+            for h,v in ipairs(GetPlayers()) do
+                local AllCharacters = VORPcore.getUser(v).getUsedCharacter
+                local AllJob = AllCharacters.job
+                if AllJob == CurrentJob then
+                    TriggerClientEvent('mms-society:client:updateplayerdata',v)
+                end
+            end
+            VORPcore.NotifyRightTip(src,_U('UpRankedEmployer'),5000)
+        end
+    else
+        VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
+    end
+end)
+
+-- DeRank Employer
+
+RegisterServerEvent('mms-society:server:DeRank',function(InputID)
+    local src = source
+    if InputID ~= "" then
+        local CharID = tonumber(InputID)
+        local GetEmployerData = MySQL.query.await("SELECT * FROM characters WHERE charidentifier=@charidentifier", { ["@charidentifier"] = CharID})
+        if #GetEmployerData > 0 then
+            Employer = GetEmployerData[1]
+            local CurrentRank = Employer.jobgrade
+            local CurrentJob = Employer.job
+            local NewRank = CurrentRank - 1
+            MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{NewRank, CharID})
+            for h,v in ipairs(GetPlayers()) do
+                local AllCharacters = VORPcore.getUser(v).getUsedCharacter
+                local AllJob = AllCharacters.job
+                if AllJob == CurrentJob then
+                    TriggerClientEvent('mms-society:client:updateplayerdata',v)
+                end
+            end
+            VORPcore.NotifyRightTip(src,_U('DeRankedEmployer'),5000)
+        end
+    else
+        VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
+    end
+end)
+
+RegisterServerEvent('mms-society:server:FireEmplyoer',function(InputID)
+    local src = source
+    if InputID ~= "" then
+        local CharID = tonumber(InputID)
+        local GetEmployerData = MySQL.query.await("SELECT * FROM characters WHERE charidentifier=@charidentifier", { ["@charidentifier"] = CharID})
+        if #GetEmployerData > 0 then
+            MySQL.update('UPDATE `characters` SET job = ? WHERE charidentifier = ?',{Config.DefaultJob, CharID})
+            MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{Config.DefaultGrade, CharID})
+            MySQL.update('UPDATE `characters` SET joblabel = ? WHERE charidentifier = ?',{Config.DefaultLabel, CharID})
+            for h,v in ipairs(GetPlayers()) do
+                local AllCharacters = VORPcore.getUser(v).getUsedCharacter
+                local AllJob = AllCharacters.job
+                if AllJob == CurrentJob then
+                    TriggerClientEvent('mms-society:client:updateplayerdata',v)
+                end
+            end
+            VORPcore.NotifyRightTip(src,_U('FiredEmployer'),5000)
+        end
+    else
+        VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
     end
 end)
