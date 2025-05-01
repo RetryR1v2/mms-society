@@ -13,7 +13,6 @@
 - Employer Management ( Only Boss )
 - Rank Management ( Only Boss )
 - If You Get a Job or Changed a Rank then it should Reload the Script data and Instatly give you the job Premissions without Relogging
-- TODO: Not included Yet
 - JobBills to CreateBills for your Job.
 - Webhook ( Everything is Logged easy Support your Players there will be Errors aswell ) Barley Included
 
@@ -26,11 +25,36 @@
 - 1.1.3
 - Added Employer Management
 - Optimized Menu Code
-- Optimized Rank Management you now see what the rang can do the Rights
+- Optimized Rank Management you now see what the rank can do the Rights
+- 1.1.4
+- Added Bill System
+- Create Company Bills
+- Delete Created Bills if you Done a Mistake
+- Payed Bills Money goes to Company Account
+- Updated SQL File
+- Updated Employer Management
 
 # installation 
 
 - Run the SQL files to add Tables in your DB
+
+- if You Update from Version 1.1.3 or Lower then Run SQL Code
+    CREATE TABLE `mms_society_bills` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`fromchar` INT(11) NULL DEFAULT NULL,
+	`fromname` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`tochar` INT(11) NULL DEFAULT NULL,
+	`toname` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`reason` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`amount` FLOAT NULL DEFAULT NULL,
+	`job` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`joblabel` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	PRIMARY KEY (`id`) USING BTREE
+    )
+    COLLATE='armscii8_general_ci'
+    ENGINE=InnoDB
+    AUTO_INCREMENT=6
+    ;
 
 
 # Required

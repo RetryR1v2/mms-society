@@ -11,6 +11,9 @@ local ImBoss = false
 local ImStorage = false
 local ImCash = false
 local SocietyActive = false
+local GetSendBills = false
+local ConfirmSiteOpen = false
+local GetRecivedBills = false
 
 local SocietyBlips = {}
 
@@ -522,7 +525,7 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
     InviteText = BossMenuPage4:RegisterElement('textdisplay', {
         value = _U('MakeSureYouCreatedRank'),
         style = {
-            ['font-size'] = '16px',
+            ['font-size'] = '20px',
             ['font-weight'] = 'bold',
             ['color'] = 'orange',
             
@@ -642,7 +645,7 @@ AddEventHandler('mms-society:client:reciveledger',function (Balance)
     LedgerAmount = BossMenuPage6:RegisterElement('textdisplay', {
         value = _U('LedgerAmountText') .. Balance .. ' $',
         style = {
-            ['font-size'] = '16px',
+            ['font-size'] = '20px',
             ['font-weight'] = 'bold',
             ['color'] = 'orange',
         }
@@ -758,7 +761,7 @@ AddEventHandler('mms-society:client:reciveranks',function (RankResult)
         v.rank = BossMenuPage3:RegisterElement('textdisplay', {
             value = displaydata,
             style = {
-                ['font-size'] = '16px',
+                ['font-size'] = '20px',
                 ['font-weight'] = 'bold',
                 ['color'] = 'orange',
                 
@@ -855,7 +858,7 @@ AddEventHandler('mms-society:client:ReciveEmployers',function (EmployerResult)
         v.charidentifier = BossMenuPage5:RegisterElement('textdisplay', {
             value = displaydata,
             style = {
-                ['font-size'] = '16px',
+                ['font-size'] = '20px',
                 ['font-weight'] = 'bold',
                 ['color'] = 'orange',
                 
@@ -875,26 +878,28 @@ AddEventHandler('mms-society:client:ReciveEmployers',function (EmployerResult)
     }, function(data)
         InputID = data.value
     end)
-    BossMenuPage5:RegisterElement('button', {
-        label =  _U('UpRank'),
+    local InputNewRank = ''
+    BossMenuPage5:RegisterElement('input', {
+        label = _U('NewRank'),
+        placeholder = "",
+        persist = false,
         style = {
         ['background-color'] = '#FF8C00',
         ['color'] = 'orange',
         ['border-radius'] = '6px'
         },
-    }, function()
-        TriggerServerEvent('mms-society:server:UpRank',InputID)
-        BossMenu:Close({ })
+    }, function(data)
+        InputNewRank = data.value
     end)
     BossMenuPage5:RegisterElement('button', {
-        label =  _U('DeRank'),
+        label =  _U('ChangeRank'),
         style = {
         ['background-color'] = '#FF8C00',
         ['color'] = 'orange',
         ['border-radius'] = '6px'
         },
     }, function()
-        TriggerServerEvent('mms-society:server:DeRank',InputID)
+        TriggerServerEvent('mms-society:server:ChangeRank',InputID,InputNewRank)
         BossMenu:Close({ })
     end)
     BossMenuPage5:RegisterElement('button', {
@@ -1068,4 +1073,365 @@ RegisterNetEvent('mms-society:client:Withdraw')
 AddEventHandler('mms-society:client:Withdraw',function(InputAmount)
     TriggerServerEvent('mms-society:server:Withdraw',InputAmount)
     BossMenuPage1:RouteTo()
+end)
+
+
+----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------- BILL MENU -------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+RegisterCommand(Config.SocietyBillsCommand, function()
+	Bills:Open({
+        startupPage = BillsPage1,
+    })
+end)
+
+Citizen.CreateThread(function ()
+    Bills = FeatherMenu:RegisterMenu('SocietyBills', {
+        top = '20%',
+        left = '20%',
+        ['720width'] = '500px',
+        ['1080width'] = '700px',
+        ['2kwidth'] = '700px',
+        ['4kwidth'] = '800px',
+        style = {
+            ['border'] = '5px solid orange',
+            -- ['background-image'] = 'none',
+            ['background-color'] = '#FF8C00'
+        },
+        contentslot = {
+            style = {
+                ['height'] = '550px',
+                ['min-height'] = '250px'
+            }
+        },
+        draggable = true,
+    --canclose = false
+}, {
+    opened = function()
+        --print("MENU OPENED!")
+    end,
+    closed = function()
+        --print("MENU CLOSED!")
+    end,
+    topage = function(data)
+        --print("PAGE CHANGED ", data.pageid)
+    end
+})
+    BillsPage1 = Bills:RegisterPage('seite1')
+    BillsPage1:RegisterElement('header', {
+        value = _U('BillsBoardHeader'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage1:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    local InputID = ''
+    BillsPage1:RegisterElement('input', {
+    label = _U('EnterPlayerID'),
+    placeholder = "",
+    persist = false,
+    style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+    },
+    }, function(data)
+        InputID = data.value
+    end)
+    local Amount = ''
+    BillsPage1:RegisterElement('input', {
+    label = _U('BillAmount'),
+    placeholder = "",
+    persist = false,
+    style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+    },
+    }, function(data)
+        Amount = data.value
+    end)
+    local Reason = ''
+        BillsPage1:RegisterElement('input', {
+        label = _U('BillReason'),
+        placeholder = "",
+        persist = false,
+        style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+        },
+    }, function(data)
+        Reason = data.value
+    end)
+    BillsPage1:RegisterElement('button', {
+        label = _U('CreateBill'),
+        style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        local BillReason = Reason
+        local BillAmount = tonumber(Amount)
+        local CustomerID = tonumber(InputID)
+        Bills:Close({})
+        TriggerServerEvent('mms-society:server:CreateBill',BillReason,BillAmount,CustomerID)
+    end)
+    BillsPage1:RegisterElement('button', {
+        label = _U('MyCreatedBills'),
+        style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function()
+        TriggerServerEvent('mms-society:server:ShowSendedBills')
+    end)
+    BillsPage1:RegisterElement('button', {
+        label = _U('MyRecievedBills'),
+        style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerServerEvent('mms-society:server:GetRecivedBills')
+    end)
+    BillsPage1:RegisterElement('button', {
+        label =  _U('CloseBoardBills'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        Bills:Close({
+        })
+    end)
+    BillsPage1:RegisterElement('subheader', {
+        value = _U('BillsBoardHeader'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage1:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+
+end)
+
+RegisterNetEvent('mms-society:client:ReciveSendetBills')
+AddEventHandler('mms-society:client:ReciveSendetBills',function(GetSendedBills)
+    if not GetSendBills then
+        GetSendBills = true
+    elseif GetSendBills then
+        BillsPage2:UnRegister()
+    end
+    BillsPage2 = Bills:RegisterPage('seite2')
+    BillsPage2:RegisterElement('header', {
+        value = _U('SendetBillsHeader'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage2:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    for h,v in ipairs(GetSendedBills) do
+    local ButtonLabel = _U('BillTo') .. v.toname .. _U('BillReason2') .. v.reason .. _U('BillAmount2') .. v.amount .. '$ ' .. _U('Company') .. v.joblabel
+        BillsPage2:RegisterElement('button', {
+            label = ButtonLabel,
+            style = {
+                ['background-color'] = '#FF8C00',
+                ['color'] = 'orange',
+                ['border-radius'] = '6px'
+                },
+            }, function()
+            local BillID = v.id
+            TriggerEvent('mms-society:client:ConfirmDelete',BillID)
+        end)
+    end
+    BillsPage2:RegisterElement('button', {
+        label =  _U('BillsBack'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BillsPage1:RouteTo()
+    end)
+    BillsPage2:RegisterElement('button', {
+        label =  _U('CloseBoardBills'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        Bills:Close({})
+    end)
+    BillsPage2:RegisterElement('subheader', {
+        value = _U('BillsBoardHeader'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage2:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage2:RouteTo()
+end)
+
+-- Confirm Page
+
+RegisterNetEvent('mms-society:client:ConfirmDelete')
+AddEventHandler('mms-society:client:ConfirmDelete',function(BillID)
+    if not ConfirmSiteOpen then
+        ConfirmSiteOpen = true
+    elseif ConfirmSiteOpen then
+        BillsPage3:UnRegister()
+    end
+    BillsPage3 = Bills:RegisterPage('seite3')
+    BillsPage3:RegisterElement('header', {
+        value = _U('WannaDeleteThisBill'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage3:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage3:RegisterElement('button', {
+        label =  _U('Confirm'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        Bills:Close({})
+        TriggerServerEvent('mms-society:server:ConfirmDelete',BillID)
+    end)
+    BillsPage3:RegisterElement('button', {
+        label =  _U('Abort'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BillsPage1:RouteTo()
+    end)
+    BillsPage3:RegisterElement('subheader', {
+        value = _U('WannaDeleteThisBill'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage3:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage3:RouteTo()
+end)
+
+RegisterNetEvent('mms-society:client:ReciveGottenBills')
+AddEventHandler('mms-society:client:ReciveGottenBills',function(ReciveGottenBills)
+    if not GetRecivedBills then
+        GetRecivedBills = true
+    elseif GetRecivedBills then
+        BillsPage4:UnRegister()
+    end
+    BillsPage4 = Bills:RegisterPage('seite2')
+    BillsPage4:RegisterElement('header', {
+        value = _U('SendetBillsHeader'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage4:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    for h,v in ipairs(ReciveGottenBills) do
+    local ButtonLabel = _U('BillFrom') .. v.fromname .. _U('BillReason2') .. v.reason .. _U('BillAmount2') .. v.amount .. '$ ' .. _U('Company') .. v.joblabel
+        BillsPage4:RegisterElement('button', {
+            label = ButtonLabel,
+            style = {
+                ['background-color'] = '#FF8C00',
+                ['color'] = 'orange',
+                ['border-radius'] = '6px'
+                },
+            }, function()
+            local BillID = v.id
+            local ToCompany = v.job
+            local Amount = v.amount
+            TriggerServerEvent('mms-society:client:PayThisBill',BillID,ToCompany,Amount)
+        end)
+    end
+    BillsPage4:RegisterElement('button', {
+        label =  _U('BillsBack'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BillsPage1:RouteTo()
+    end)
+    BillsPage4:RegisterElement('button', {
+        label =  _U('CloseBoardBills'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        Bills:Close({})
+    end)
+    BillsPage4:RegisterElement('subheader', {
+        value = _U('BillsBoardHeader'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage4:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BillsPage4:RouteTo()
 end)

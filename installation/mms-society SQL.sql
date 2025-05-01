@@ -29,3 +29,21 @@ COLLATE='utf8mb3_general_ci'
 ENGINE=InnoDB
 AUTO_INCREMENT=19
 ;
+
+
+CREATE TABLE `mms_society_bills` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`fromchar` INT(11) NULL DEFAULT NULL,
+	`fromname` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`tochar` INT(11) NULL DEFAULT NULL,
+	`toname` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`reason` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`amount` FLOAT NULL DEFAULT NULL,
+	`job` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	`joblabel` VARCHAR(50) NULL DEFAULT NULL COLLATE 'armscii8_general_ci',
+	PRIMARY KEY (`id`) USING BTREE
+)
+COLLATE='armscii8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=6
+;

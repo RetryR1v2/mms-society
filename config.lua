@@ -40,3 +40,7 @@ Config.StorageSize = 5000
 Config.DefaultJob = 'unemployed'
 Config.DefaultLabel = 'Unemployed'
 Config.DefaultGrade = 0
+
+-- Bills Command
+
+Config.SocietyBillsCommand = 'JobRechnung' -- Carefull my Banking has Bills too.

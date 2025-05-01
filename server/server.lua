@@ -40,7 +40,7 @@ RegisterServerEvent('mms-society:server:createjob',function(jobname,joblabel,bos
     if jobname ~= "" and joblabel ~= "" and bossrank ~= "" then
         local result = MySQL.query.await("SELECT * FROM mms_society WHERE name=@name", { ["@name"] = jobname})
         if #result > 0 then
-            VORPcore.NotifyTip(src, _U('JobAlreadyExist') .. jobname .. ' ' .. joblabel,  5000)
+            VORPcore.NotifyRightTip(src, _U('JobAlreadyExist') .. jobname .. ' ' .. joblabel,  5000)
             if Config.EnableWebHook then
                 VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, _U('JobAlreadyExist') .. jobname .. ' ' .. joblabel, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
             end
@@ -49,7 +49,7 @@ RegisterServerEvent('mms-society:server:createjob',function(jobname,joblabel,bos
             {jobname,joblabel,0,0,0,0,0,0,0}, function()end)
             MySQL.insert('INSERT INTO `mms_society_ranks` (name, ranklabel, rank, isboss, canwithdraw, storageaccess) VALUES (?, ?, ?, ?, ?, ?)',
             {jobname,"Boss",bossrank,1,1,1}, function()end)
-            VORPcore.NotifyTip(src, _U('JobCreated') .. jobname .. ' ' .. joblabel,  5000)
+            VORPcore.NotifyRightTip(src, _U('JobCreated') .. jobname .. ' ' .. joblabel,  5000)
             if Config.EnableWebHook then
                 VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, _U('JobCreated') .. jobname .. ' ' .. joblabel, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
             end
@@ -69,7 +69,7 @@ RegisterServerEvent('mms-society:server:setbosslocation',function(BossPosX,BossP
         MySQL.update('UPDATE `mms_society` SET BossPosX = ?  WHERE name = ?',{BossPosX, job})
         MySQL.update('UPDATE `mms_society` SET BossPosY = ?  WHERE name = ?',{BossPosY, job})
         MySQL.update('UPDATE `mms_society` SET BossPosZ = ?  WHERE name = ?',{BossPosZ, job})
-        VORPcore.NotifyTip(src, _U('BossPositionSet'),  5000)
+        VORPcore.NotifyRightTip(src, _U('BossPositionSet'),  5000)
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink,_U('BossPositionSet'), Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
@@ -87,7 +87,7 @@ RegisterServerEvent('mms-society:server:setstoragelocation',function(StoragePosX
         MySQL.update('UPDATE `mms_society` SET StoragePosX = ?  WHERE name = ?',{StoragePosX, job})
         MySQL.update('UPDATE `mms_society` SET StoragePosY = ?  WHERE name = ?',{StoragePosY, job})
         MySQL.update('UPDATE `mms_society` SET StoragePosZ = ?  WHERE name = ?',{StoragePosZ, job})
-        VORPcore.NotifyTip(src, _U('StorageSet'),  5000)
+        VORPcore.NotifyRightTip(src, _U('StorageSet'),  5000)
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink,_U('StorageSet'), Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
@@ -113,12 +113,12 @@ RegisterServerEvent('mms-society:server:bosscreaterank',function(InputRank,Input
     if not exists then 
         MySQL.insert('INSERT INTO `mms_society_ranks` (name, ranklabel, rank, isboss, canwithdraw, storageaccess) VALUES (?, ?, ?, ?, ?, ?)',
         {job,InputLabel,InputRank,IsBoss,CanWithdraw,StorageAccess}, function()end)
-        VORPcore.NotifyTip(src, _U('NewRankCreated'),  5000)
+        VORPcore.NotifyRightTip(src, _U('NewRankCreated'),  5000)
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, _U('NewRankCreated') .. ' ' .. InputRank .. ' ' .. InputLabel, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
     else
-        VORPcore.NotifyTip(src, _U('RankExistsAlready'),  5000)
+        VORPcore.NotifyRightTip(src, _U('RankExistsAlready'),  5000)
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink,_U('RankExistsAlready'), Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
@@ -173,14 +173,14 @@ RegisterServerEvent('mms-society:server:bossdeleterank',function(InputRank)
     local jobGrade = Character.jobGrade
     local NumberInputRank = tonumber(InputRank)
     if NumberInputRank == jobGrade then
-        VORPcore.NotifyTip(src, _U('CantOwnRankDeleted') .. job .. ' ' .. InputRank,  5000)
+        VORPcore.NotifyRightTip(src, _U('CantOwnRankDeleted') .. job .. ' ' .. InputRank,  5000)
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink,_U('CantOwnRankDeleted') .. job .. ' ' .. InputRank, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
     else
         MySQL.execute('DELETE FROM mms_society_ranks WHERE rank = ?', { InputRank }, function()
         end)
-        VORPcore.NotifyTip(src, _U('RankDeleted') .. job .. ' ' .. InputRank,  5000)
+        VORPcore.NotifyRightTip(src, _U('RankDeleted') .. job .. ' ' .. InputRank,  5000)
         if Config.EnableWebHook then
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink,_U('RankDeleted') .. job .. ' ' .. InputRank, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
@@ -215,8 +215,8 @@ RegisterServerEvent('mms-society:server:InvitePlayer',function(InputRank,InputPl
             local NewEmployerlastname = NewEmployerChar.lastname
             local NewEmployerCharidentifier = NewEmployerChar.charIdentifier
             
-            VORPcore.NotifyTip(src, _U('PlayerInvited') .. NewEmployerfirstname .. ' ' .. NewEmployerlastname .. '!',  5000)
-            VORPcore.NotifyTip(NumInputPID, _U('YouGotInvited') .. job .. _U('YourRank') .. InputRank .. '!',  5000)
+            VORPcore.NotifyRightTip(src, _U('PlayerInvited') .. NewEmployerfirstname .. ' ' .. NewEmployerlastname .. '!',  5000)
+            VORPcore.NotifyRightTip(NumInputPID, _U('YouGotInvited') .. job .. _U('YourRank') .. InputRank .. '!',  5000)
             ClosestCharacter.setJob(job)
             ClosestCharacter.setJobGrade(NumInputRank)
             ClosestCharacter.setJobLabel(RankLabel)
@@ -273,9 +273,9 @@ RegisterServerEvent('mms-society:server:Withdraw',function (InputAmount)
         if OldBalance >= ToNumberAmount then
             Character.addCurrency(0,ToNumberAmount)
             MySQL.update('UPDATE `mms_society` SET balance = ? WHERE name = ?',{NewBalance, job})
-            VORPcore.NotifyTip(src, ToNumberAmount .. _U('Withdrawn'),  5000)
+            VORPcore.NotifyRightTip(src, ToNumberAmount .. _U('Withdrawn'),  5000)
         else
-            VORPcore.NotifyTip(src, _U('NotEnoghMoney'),  5000)
+            VORPcore.NotifyRightTip(src, _U('NotEnoghMoney'),  5000)
         end
     end
 end)
@@ -293,9 +293,9 @@ RegisterServerEvent('mms-society:server:Deposit',function (InputAmount)
         if MyMoney >= ToNumberAmount then
             Character.removeCurrency(0,ToNumberAmount)
             MySQL.update('UPDATE `mms_society` SET balance = ? WHERE name = ?',{NewBalance, job})
-            VORPcore.NotifyTip(src, ToNumberAmount .. _U('Deposited'),  5000)
+            VORPcore.NotifyRightTip(src, ToNumberAmount .. _U('Deposited'),  5000)
         else
-            VORPcore.NotifyTip(src, _U('NotEnoghMoney'),  5000)
+            VORPcore.NotifyRightTip(src, _U('NotEnoghMoney'),  5000)
         end
     end
 end)
@@ -321,16 +321,13 @@ end)
 
 -- UpRank Employer
 
-RegisterServerEvent('mms-society:server:UpRank',function(InputID)
+RegisterServerEvent('mms-society:server:ChangeRank',function(InputID,InputNewRank)
     local src = source
-    if InputID ~= "" then
+    if InputID ~= "" and InputNewRank ~= "" then
         local CharID = tonumber(InputID)
+        local NewRank = tonumber(InputNewRank)
         local GetEmployerData = MySQL.query.await("SELECT * FROM characters WHERE charidentifier=@charidentifier", { ["@charidentifier"] = CharID})
         if #GetEmployerData > 0 then
-            Employer = GetEmployerData[1]
-            local CurrentRank = Employer.jobgrade
-            local CurrentJob = Employer.job
-            local NewRank = CurrentRank + 1
             MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{NewRank, CharID})
             for h,v in ipairs(GetPlayers()) do
                 local AllCharacters = VORPcore.getUser(v).getUsedCharacter
@@ -342,37 +339,7 @@ RegisterServerEvent('mms-society:server:UpRank',function(InputID)
                     TriggerClientEvent('mms-society:client:updateplayerdata',v)
                 end
             end
-            VORPcore.NotifyRightTip(src,_U('UpRankedEmployer'),5000)
-        end
-    else
-        VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
-    end
-end)
-
--- DeRank Employer
-
-RegisterServerEvent('mms-society:server:DeRank',function(InputID)
-    local src = source
-    if InputID ~= "" then
-        local CharID = tonumber(InputID)
-        local GetEmployerData = MySQL.query.await("SELECT * FROM characters WHERE charidentifier=@charidentifier", { ["@charidentifier"] = CharID})
-        if #GetEmployerData > 0 then
-            Employer = GetEmployerData[1]
-            local CurrentRank = Employer.jobgrade
-            local CurrentJob = Employer.job
-            local NewRank = CurrentRank - 1
-            MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{NewRank, CharID})
-            for h,v in ipairs(GetPlayers()) do
-                local AllCharacters = VORPcore.getUser(v).getUsedCharacter
-                local AllJob = AllCharacters.job
-                if AllCharacters.charIdentifier == CharID then
-                    AllCharacters.setJobGrade(NewRank)
-                end
-                if AllJob == CurrentJob then
-                    TriggerClientEvent('mms-society:client:updateplayerdata',v)
-                end
-            end
-            VORPcore.NotifyRightTip(src,_U('DeRankedEmployer'),5000)
+            VORPcore.NotifyRightTip(src,_U('ChangeedRankEmployer'),5000)
         end
     else
         VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
@@ -404,5 +371,87 @@ RegisterServerEvent('mms-society:server:FireEmplyoer',function(InputID)
         end
     else
         VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
+    end
+end)
+
+
+---- Create Bill
+
+RegisterServerEvent('mms-society:server:CreateBill',function(BillReason,BillAmount,CustomerID)
+    local src = source
+    if BillReason ~= "" and BillAmount > 0 and CustomerID > 0 then
+        local Sender = VORPcore.getUser(src).getUsedCharacter
+        local SenderName = Sender.firstname .. ' ' .. Sender.lastname
+        local SenderCharID = Sender.charIdentifier
+        local SenderJob = Sender.job
+        local SenderJobLabel = Sender.jobLabel
+        local Customer = VORPcore.getUser(CustomerID).getUsedCharacter
+        local CustomerName = Customer.firstname .. ' ' .. Customer.lastname
+        local CustomerCharID = Customer.charIdentifier
+        MySQL.insert('INSERT INTO `mms_society_bills` (fromchar, fromname, tochar, toname, reason, amount, job, joblabel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        {SenderCharID,SenderName,CustomerCharID,CustomerName,BillReason,BillAmount,SenderJob,SenderJobLabel}, function()end)
+        VORPcore.NotifyRightTip(src,_U('CreatedABill') .. CustomerName,5000)
+        VORPcore.NotifyRightTip(CustomerID,_U('RecivedABill') .. SenderName,5000)
+    else
+        VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
+    end
+end)
+
+-- Get Sendet Bills
+
+RegisterServerEvent('mms-society:server:ShowSendedBills',function()
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local CharID = Character.charIdentifier
+    local GetSendedBills = MySQL.query.await("SELECT * FROM mms_society_bills WHERE fromchar=@fromchar", { ["@fromchar"] = CharID})
+        if #GetSendedBills > 0 then
+            TriggerClientEvent('mms-society:client:ReciveSendetBills',src,GetSendedBills)
+        else
+            VORPcore.NotifyRightTip(src,_U('NoSendetBills'),5000)
+        end
+end)
+
+-- Delete Bill 
+
+RegisterServerEvent('mms-society:server:ConfirmDelete',function(BillID)
+    local src = source
+    MySQL.execute('DELETE FROM mms_society_bills WHERE id = ?', { BillID }, function()
+    end)
+    VORPcore.NotifyRightTip(src,_U('BillDeleted'),5000)
+end)
+
+-- Get Recived Bills
+
+RegisterServerEvent('mms-society:server:GetRecivedBills',function()
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local CharID = Character.charIdentifier
+    local ReciveGottenBills = MySQL.query.await("SELECT * FROM mms_society_bills WHERE tochar=@tochar", { ["@tochar"] = CharID})
+        if #ReciveGottenBills > 0 then
+            TriggerClientEvent('mms-society:client:ReciveGottenBills',src,ReciveGottenBills)
+        else
+            VORPcore.NotifyRightTip(src,_U('NoRecivedBills'),5000)
+        end
+end)
+
+-- Pay This Bill
+
+RegisterServerEvent('mms-society:client:PayThisBill',function(BillID,ToCompany,Amount)
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local Money = Character.money
+    if Money >= Amount then
+        local GetCompany = MySQL.query.await("SELECT * FROM mms_society WHERE name=@name", { ["@name"] = ToCompany})
+        if #GetCompany > 0 then
+            local OldBalance = GetCompany[1].balance
+            local NewBalance = OldBalance + Amount
+            MySQL.update('UPDATE `mms_society` SET balance = ? WHERE name = ?',{NewBalance, ToCompany})
+            MySQL.execute('DELETE FROM mms_society_bills WHERE id = ?', { BillID }, function()
+            end)
+            Character.removeCurrency(0,Amount)
+            VORPcore.NotifyRightTip(src,_U('BillPayed'),5000)
+        end
+    else
+        VORPcore.NotifyRightTip(src,_U('NotEnoghMoney2'),5000)
     end
 end)
