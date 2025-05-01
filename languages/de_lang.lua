@@ -38,7 +38,7 @@ Locales["de_lang"] = {
     Invited = ' Stellt den Spieler: ',
     Jobb = ' Beruf: ',
     Rankk = ' Rang: ',
-    InvitePlayerButton = 'Nahen Spieler Einstellen',
+    InvitePlayerButton = 'Spieler Einstellen',
     OpenBossMenuPrompt = 'Job Menu Öffnen',
     OpenStoragePrompt = 'Job Lager Öffnen',
     Ledger = 'Firmenkonto',
@@ -50,4 +50,6 @@ Locales["de_lang"] = {
     Withdraw = 'Auszahlen',
     Deposit = 'Einzahlen',
     LeaveCompany = 'Kündigen',
+    EnterPlayerID = 'Spieler ID: ',
+    PlayerNotFound = 'Spieler mit diese ID nicht Gefunden',
 }

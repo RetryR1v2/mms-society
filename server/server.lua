@@ -175,54 +175,53 @@ RegisterServerEvent('mms-society:server:bossdeleterank',function(InputRank)
     end
 end)
 
---- InviteClosestPlayer
+--- InvitePlayer
 
-RegisterServerEvent('mms-society:server:InviteClosestPlayer',function(InputRank)
+RegisterServerEvent('mms-society:server:InvitePlayer',function(InputRank,InputPlayerID)
     local src = source
-    local Character = VORPcore.getUser(src).getUsedCharacter
-    local job = Character.job
-    local jobGrade = Character.jobGrade
-    local NumberInputRank = tonumber(InputRank)
-    local MyPedId = GetPlayerPed(src)
-    local MyCoords =  GetEntityCoords(MyPedId)
-    local firstname = Character.firstname
-    local lastname = Character.lastname
-    local RankLabel = ''
-    local RankResult = MySQL.query.await("SELECT * FROM mms_society_ranks WHERE name=@name", { ["name"] = job})
-    
-    if #RankResult > 0 then
-        for i,v in ipairs(RankResult) do
-            if NumberInputRank == v.rank then
-                RankLabel = v.ranklabel
+    if InputRank ~= '' and InputPlayerID ~= '' then
+        local Character = VORPcore.getUser(src).getUsedCharacter
+        local job = Character.job
+        local NumInputPID = tonumber(InputPlayerID)
+        local NumInputRank = tonumber(InputRank)
+        local firstname = Character.firstname
+        local lastname = Character.lastname
+        local RankLabel = ''
+        local RankResult = MySQL.query.await("SELECT * FROM mms_society_ranks WHERE name=@name", { ["name"] = job})
+        
+        if #RankResult > 0 then
+            for i,v in ipairs(RankResult) do
+                if NumInputRank == v.rank then
+                    RankLabel = v.ranklabel
+                end
             end
         end
-    end
 
-    for _, player in ipairs(GetPlayers()) do
-        local ClosestCharacter = VORPcore.getUser(player).getUsedCharacter
-        local PlayerPedId = GetPlayerPed(player)
-        local PlayerCoords =  GetEntityCoords(PlayerPedId)
-        local Dist = #(MyCoords - PlayerCoords)
-        local closestfirstname = ClosestCharacter.firstname
-        local closestlastname = ClosestCharacter.lastname
-        local closestcharidentifier = ClosestCharacter.charIdentifier
-        if Dist > 0.3 and Dist < 1.5 then
-            VORPcore.NotifyTip(src, _U('PlayerInvited') .. closestfirstname .. ' ' .. closestlastname .. '!',  5000)
-            VORPcore.NotifyTip(player, _U('YouGotInvited') .. job .. _U('YourRank') .. InputRank .. '!',  5000)
+        local NewEmployerChar = VORPcore.getUser(NumInputPID).getUsedCharacter
+        if NewEmployerChar ~= nil then
+            local NewEmployerfirstname = NewEmployerChar.firstname
+            local NewEmployerlastname = NewEmployerChar.lastname
+            local NewEmployerCharidentifier = NewEmployerChar.charIdentifier
+            
+            VORPcore.NotifyTip(src, _U('PlayerInvited') .. NewEmployerfirstname .. ' ' .. NewEmployerlastname .. '!',  5000)
+            VORPcore.NotifyTip(NumInputPID, _U('YouGotInvited') .. job .. _U('YourRank') .. InputRank .. '!',  5000)
             ClosestCharacter.setJob(job)
-            ClosestCharacter.setJobGrade(NumberInputRank)
+            ClosestCharacter.setJobGrade(NumInputRank)
             ClosestCharacter.setJobLabel(RankLabel)
-            MySQL.update('UPDATE `characters` SET job = ? WHERE charidentifier = ?',{job, closestcharidentifier})
-            MySQL.update('UPDATE `characters` SET joblabel = ? WHERE charidentifier = ?',{RankLabel, closestcharidentifier})
-            MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{NumberInputRank, closestcharidentifier})
+            MySQL.update('UPDATE `characters` SET job = ? WHERE charidentifier = ?',{job, NewEmployerCharidentifier})
+            MySQL.update('UPDATE `characters` SET joblabel = ? WHERE charidentifier = ?',{RankLabel, NewEmployerCharidentifier})
+            MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{NumInputRank, NewEmployerCharidentifier})
             Wait(250)
-            TriggerClientEvent('mms-society:client:updateplayerdata',player)
+            TriggerClientEvent('mms-society:client:updateplayerdata',NumInputPID)
             if Config.EnableWebHook == true then
-                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, firstname .. ' ' .. lastname .. _U('Invited') .. closestfirstname .. ' ' .. closestlastname .. _U('Jobb') .. job .. _U('Rankk') .. InputRank, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, firstname .. ' ' .. lastname .. _U('Invited') .. NewEmployerfirstname .. ' ' .. NewEmployerlastname .. _U('Jobb') .. job .. _U('Rankk') .. InputRank, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
             end
+        else
+            VORPcore.NotifyRightTip(src, _U('PlayerNotFound'), 5000)
         end
+    else
+        VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
     end
-
 end)
 
 

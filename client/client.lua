@@ -516,6 +516,19 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
             
         }
     })
+    local InputPlayerID = ''
+    BossMenuPage4:RegisterElement('input', {
+        label = _U('EnterPlayerID'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        InputPlayerID = data.value
+    end)
     local InputRank = ''
     BossMenuPage4:RegisterElement('input', {
         label = _U('EnterRank'),
@@ -537,7 +550,7 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
         ['border-radius'] = '6px'
         },
     }, function()
-        TriggerEvent('mms-society:client:InviteClosestPlayer',InputRank)
+        TriggerEvent('mms-society:client:InvitePlayer',InputRank,InputPlayerID)
     end)
     BossMenuPage4:RegisterElement('button', {
         label =  _U('Back'),
@@ -573,7 +586,6 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
         ['color'] = 'orange',
         }
     })
-
 
 end)
 
@@ -1012,9 +1024,9 @@ end)
 
 --- Invite Player
 
-RegisterNetEvent('mms-society:client:InviteClosestPlayer')
-AddEventHandler('mms-society:client:InviteClosestPlayer',function(InputRank)
-    TriggerServerEvent('mms-society:server:InviteClosestPlayer',InputRank)
+RegisterNetEvent('mms-society:client:InvitePlayer')
+AddEventHandler('mms-society:client:InvitePlayer',function(InputRank,InputPlayerID)
+    TriggerServerEvent('mms-society:server:InvitePlayer',InputRank,InputPlayerID)
 end)
 
 --- Create Menü and Storage
