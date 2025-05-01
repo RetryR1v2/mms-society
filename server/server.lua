@@ -335,6 +335,9 @@ RegisterServerEvent('mms-society:server:UpRank',function(InputID)
             for h,v in ipairs(GetPlayers()) do
                 local AllCharacters = VORPcore.getUser(v).getUsedCharacter
                 local AllJob = AllCharacters.job
+                if AllCharacters.charIdentifier == CharID then
+                    AllCharacters.setJobGrade(NewRank)
+                end
                 if AllJob == CurrentJob then
                     TriggerClientEvent('mms-society:client:updateplayerdata',v)
                 end
@@ -362,6 +365,9 @@ RegisterServerEvent('mms-society:server:DeRank',function(InputID)
             for h,v in ipairs(GetPlayers()) do
                 local AllCharacters = VORPcore.getUser(v).getUsedCharacter
                 local AllJob = AllCharacters.job
+                if AllCharacters.charIdentifier == CharID then
+                    AllCharacters.setJobGrade(NewRank)
+                end
                 if AllJob == CurrentJob then
                     TriggerClientEvent('mms-society:client:updateplayerdata',v)
                 end
@@ -385,6 +391,11 @@ RegisterServerEvent('mms-society:server:FireEmplyoer',function(InputID)
             for h,v in ipairs(GetPlayers()) do
                 local AllCharacters = VORPcore.getUser(v).getUsedCharacter
                 local AllJob = AllCharacters.job
+                if AllCharacters.charIdentifier == CharID then
+                    AllCharacters.setJob(Config.DefaultJob)
+                    AllCharacters.setJobGrade(Config.DefaultGrade)
+                    AllCharacters.setJobLabel(Config.DefaultLabel)
+                end
                 if AllJob == CurrentJob then
                     TriggerClientEvent('mms-society:client:updateplayerdata',v)
                 end
