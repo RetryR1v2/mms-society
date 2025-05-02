@@ -17,7 +17,7 @@ Config.WHAvatar = '' -- must be 30x30px
 
 --- Language
 
-Config.defaultlang = "de_lang" -- Set Language (Current Languages: "en_lang" English, "de_lang" German)
+Config.defaultlang = "de_lang" -- Set Language (Current Languages: "de_lang" German)
 
 --- Admin Command to Create jobs
 
@@ -44,3 +44,4 @@ Config.DefaultGrade = 0
 -- Bills Command
 
 Config.SocietyBillsCommand = 'JobRechnung' -- Carefull my Banking has Bills too.
+

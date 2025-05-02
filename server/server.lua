@@ -217,9 +217,9 @@ RegisterServerEvent('mms-society:server:InvitePlayer',function(InputRank,InputPl
             
             VORPcore.NotifyRightTip(src, _U('PlayerInvited') .. NewEmployerfirstname .. ' ' .. NewEmployerlastname .. '!',  5000)
             VORPcore.NotifyRightTip(NumInputPID, _U('YouGotInvited') .. job .. _U('YourRank') .. InputRank .. '!',  5000)
-            ClosestCharacter.setJob(job)
-            ClosestCharacter.setJobGrade(NumInputRank)
-            ClosestCharacter.setJobLabel(RankLabel)
+            NewEmployerChar.setJob(job)
+            NewEmployerChar.setJobGrade(NumInputRank)
+            NewEmployerChar.setJobLabel(RankLabel)
             MySQL.update('UPDATE `characters` SET job = ? WHERE charidentifier = ?',{job, NewEmployerCharidentifier})
             MySQL.update('UPDATE `characters` SET joblabel = ? WHERE charidentifier = ?',{RankLabel, NewEmployerCharidentifier})
             MySQL.update('UPDATE `characters` SET jobgrade = ? WHERE charidentifier = ?',{NumInputRank, NewEmployerCharidentifier})

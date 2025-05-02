@@ -33,6 +33,7 @@
 - Payed Bills Money goes to Company Account
 - Updated SQL File
 - Updated Employer Management
+- 1.1.5 Minor Bug Fix
 
 # installation 
 
