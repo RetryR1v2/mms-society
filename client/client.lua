@@ -14,6 +14,7 @@ local SocietyActive = false
 local GetSendBills = false
 local ConfirmSiteOpen = false
 local GetRecivedBills = false
+local DeleteJobMenu = false
 
 local SocietyBlips = {}
 
@@ -92,17 +93,19 @@ Citizen.CreateThread(function ()
         },
         draggable = true,
     --canclose = false
-}, {
-    opened = function()
-        --print("MENU OPENED!")
-    end,
-    closed = function()
-        --print("MENU CLOSED!")
-    end,
-    topage = function(data)
-        --print("PAGE CHANGED ", data.pageid)
-    end
-})
+    }, {
+        opened = function()
+            --print("MENU OPENED!")
+        end,
+        closed = function()
+            --print("MENU CLOSED!")
+        end,
+        topage = function(data)
+            --print("PAGE CHANGED ", data.pageid)
+        end
+    })
+
+    --- Seite 1 Menu
     JobCreatorPage1 = JobCreator:RegisterPage('seite1')
     JobCreatorPage1:RegisterElement('header', {
         value = _U('JobCreatorHeader'),
@@ -117,56 +120,26 @@ Citizen.CreateThread(function ()
         ['color'] = 'orange',
         }
     })
-    local jobname = ''
-    JobCreatorPage1:RegisterElement('input', {
-        label = _U('EnterJobName'),
-        placeholder = "",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        jobname = data.value
-    end)
-    local joblabel = ''
-    JobCreatorPage1:RegisterElement('input', {
-        label = _U('EnterJobLabel'),
-        placeholder = "",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        joblabel = data.value
-    end)
-    local bossrank = ''
-    JobCreatorPage1:RegisterElement('input', {
-        label = _U('EnterBossGrade'),
-        placeholder = "",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        bossrank = data.value
-    end)
     JobCreatorPage1:RegisterElement('button', {
-        label = _U('CreateJob'),
+        label =  _U('JobCreatorCreateJobButton'),
         style = {
         ['background-color'] = '#FF8C00',
         ['color'] = 'orange',
         ['border-radius'] = '6px'
         },
     }, function()
-        TriggerEvent('mms-society:client:createjob',jobname,joblabel,bossrank)
+        JobCreatorPage2.RouteTo()
     end)
-    
+    JobCreatorPage1:RegisterElement('button', {
+        label =  _U('JobCreatorDeleteJobButton'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerServerEvent('mms-society:server:GetAllJobs')
+    end)
     JobCreatorPage1:RegisterElement('button', {
         label =  _U('CloseJobCreator'),
         style = {
@@ -175,8 +148,7 @@ Citizen.CreateThread(function ()
         ['border-radius'] = '6px'
         },
     }, function()
-        JobCreator:Close({ 
-        })
+        JobCreator:Close({ })
     end)
     JobCreatorPage1:RegisterElement('subheader', {
         value = _U('JobCreatorHeader'),
@@ -191,6 +163,179 @@ Citizen.CreateThread(function ()
         ['color'] = 'orange',
         }
     })
+
+-- Seite 2 Job Erstellen
+    JobCreatorPage2 = JobCreator:RegisterPage('seite2')
+    JobCreatorPage2:RegisterElement('header', {
+        value = _U('JobCreatorHeader'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    JobCreatorPage2:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    local jobname = ''
+    JobCreatorPage2:RegisterElement('input', {
+        label = _U('EnterJobName'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        jobname = data.value
+    end)
+    local joblabel = ''
+    JobCreatorPage2:RegisterElement('input', {
+        label = _U('EnterJobLabel'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        joblabel = data.value
+    end)
+    local bossrank = ''
+    JobCreatorPage2:RegisterElement('input', {
+        label = _U('EnterBossGrade'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        bossrank = data.value
+    end)
+    JobCreatorPage2:RegisterElement('button', {
+        label = _U('CreateJob'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerEvent('mms-society:client:createjob',jobname,joblabel,bossrank)
+    end)
+    JobCreatorPage2:RegisterElement('button', {
+        label =  _U('JobCreatorBack'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        JobCreatorPage1.RouteTo()
+    end)
+    JobCreatorPage2:RegisterElement('button', {
+        label =  _U('CloseJobCreator'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        JobCreator:Close({ 
+        })
+    end)
+    JobCreatorPage2:RegisterElement('subheader', {
+        value = _U('JobCreatorHeader'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    JobCreatorPage2:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+end)
+
+-- Seite 3
+
+RegisterNetEvent('mms-society:server:GetAllJobs')
+AddEventHandler('mms-society:server:GetAllJobs',function(AllJobs)
+    if not DeleteJobMenu then
+        DeleteJobMenu = true
+    elseif DeleteJobMenu then
+        JobCreatorPage3:UnRegister()
+    end
+    JobCreatorPage3 = JobCreator:RegisterPage('seite3')
+    JobCreatorPage3:RegisterElement('header', {
+        value = _U('JobCreatorHeader'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    JobCreatorPage3:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    for h,v in ipairs(AllJobs) do
+        local TextData = _U('JobNameToDelte') .. v.name .. _U('SureToDelte')
+        JobCreatorPage3:RegisterElement('button', {
+            label = TextData,
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function()
+            local JobToDelete = v.name
+            TriggerServerEvent('mms-society:client:DeleteJobPermanently',JobToDelete)
+        end)
+    end
+    JobCreatorPage3:RegisterElement('button', {
+        label =  _U('JobCreatorBack'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        JobCreatorPage1.RouteTo()
+    end)
+    JobCreatorPage3:RegisterElement('button', {
+        label =  _U('CloseJobCreator'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        JobCreator:Close({ 
+        })
+    end)
+    JobCreatorPage3:RegisterElement('subheader', {
+        value = _U('JobCreatorHeader'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    JobCreatorPage3:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    JobCreatorPage3:RouteTo()
 end)
 
 ---------------------------------------------------------------------------------------------------------

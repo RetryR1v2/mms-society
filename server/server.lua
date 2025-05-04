@@ -455,3 +455,32 @@ RegisterServerEvent('mms-society:client:PayThisBill',function(BillID,ToCompany,A
         VORPcore.NotifyRightTip(src,_U('NotEnoghMoney2'),5000)
     end
 end)
+
+-- Delete Job Permanently
+
+RegisterServerEvent('mms-society:client:DeleteJobPermanently',function(JobToDelete)
+    local src = source
+    MySQL.execute('DELETE FROM mms_society WHERE name = ?', { JobToDelete }, function()
+    end)
+    MySQL.execute('DELETE FROM mms_society_ranks WHERE name = ?', { JobToDelete }, function()
+    end)
+    MySQL.execute('DELETE FROM mms_society_bills WHERE job = ?', { JobToDelete }, function()
+    end)
+    local InvetoryExists = exports.vorp_inventory:isCustomInventoryRegistered(JobToDelete)
+    if InvetoryExists then
+        exports.vorp_inventory:deleteCustomInventory(JobToDelete)
+        exports.vorp_inventory:removeInventory(JobToDelete)
+    end
+end)
+
+-- Get Jobs From DB
+
+RegisterServerEvent('mms-society:server:GetAllJobs',function()
+    local src = source
+    local AllJobs = MySQL.query.await("SELECT * FROM mms_society", {})
+    if AllJobs ~= nil then
+        TriggerClientEvent('mms-society:client:ReciveAllJobs',src,AllJobs)
+    else
+        VORPcore.NotifyRightTip(src, _U('NoJobsFound'),5000)
+    end
+end)

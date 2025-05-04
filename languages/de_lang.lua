@@ -92,4 +92,10 @@ Locales["de_lang"] = {
     BillFrom = 'Rechnung Von: ',
     NotEnoghMoney2 = 'Nicht genug Geld',
     BillPayed = 'Rechnung Bezahlt',
+    JobCreatorBack = 'Zurück',
+    JobCreatorCreateJobButton = 'Beruf Erstellen',
+    JobCreatorDeleteJobButton = 'Beruf Löschen',
+    NoJobsFound = 'Keine Berufe gefuden',
+    JobNameToDelte = 'Beruf: ',
+    SureToDelte = ' Endgültig LÖSCHEN ?',
 }

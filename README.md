@@ -34,6 +34,9 @@
 - Updated SQL File
 - Updated Employer Management
 - 1.1.5 Minor Bug Fix
+- 1.1.6 Reworked JobCreator
+- Added Fuction to Delete the Job from Database
+- Carefull Deleting an Job Deletes All Ranks and Cleares the Storage and Created Bills.
 
 # installation 
 
