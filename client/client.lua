@@ -1317,7 +1317,7 @@ RegisterNetEvent('mms-society:client:CreateBossAndStorage',function(job,jobGrade
     for h,v in ipairs (societyjobs)do
         if job == v.name then
             if Config.ShowStorageBlip then 
-                local StorageBlip = BccUtils.Blips:SetBlip(v.label, Config.BlipSpriteStorage, 0.2, v.StoragePosX,v.StoragePosY,v.StoragePosZ)
+                local StorageBlip = BccUtils.Blips:SetBlip(v.label, Config.BlipSpriteStorage, 0.8, v.StoragePosX,v.StoragePosY,v.StoragePosZ)
                 SocietyBlips[#SocietyBlips + 1] = StorageBlip
             end
         end
@@ -1361,7 +1361,7 @@ RegisterNetEvent('mms-society:client:CreateSocietyBlips')
 AddEventHandler('mms-society:client:CreateSocietyBlips',function(societyjobs)
     for h,v in ipairs(societyjobs) do
         if v.blipactive == 1 then
-            local CompanyBlip = BccUtils.Blips:SetBlip(v.blipname, v.bliphash, 1.0, v.BossPosX, v.BossPosY, v.BossPosZ)
+            local CompanyBlip = BccUtils.Blips:SetBlip(v.blipname, v.bliphash, 0.8, v.BossPosX, v.BossPosY, v.BossPosZ)
             local blipModifier = BccUtils.Blips:AddBlipModifier(CompanyBlip, v.blipcolor)
             blipModifier:ApplyModifier()
             SocietyBlips[#SocietyBlips + 1] = CompanyBlip
