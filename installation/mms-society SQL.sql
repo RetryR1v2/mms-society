@@ -8,11 +8,16 @@ CREATE TABLE `mms_society` (
 	`StoragePosX` FLOAT NOT NULL,
 	`StoragePosY` FLOAT NOT NULL,
 	`StoragePosZ` FLOAT NOT NULL,
+	`blipactive` INT(11) NULL DEFAULT NULL,
+	`bliphash` VARCHAR(50) NULL DEFAULT 'Keiner' COLLATE 'utf8mb3_general_ci',
+	`blipname` VARCHAR(50) NULL DEFAULT 'Keiner' COLLATE 'utf8mb3_general_ci',
+	`blipcolor` VARCHAR(50) NULL DEFAULT 'Keiner' COLLATE 'utf8mb3_general_ci',
 	PRIMARY KEY (`name`) USING BTREE
 )
 COLLATE='utf8mb3_general_ci'
 ENGINE=InnoDB
 ;
+
 
 
 CREATE TABLE `mms_society_ranks` (

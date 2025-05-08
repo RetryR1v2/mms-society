@@ -484,3 +484,33 @@ RegisterServerEvent('mms-society:server:GetAllJobs',function()
         VORPcore.NotifyRightTip(src, _U('NoJobsFound'),5000)
     end
 end)
+
+-- ToggelBlip
+
+RegisterServerEvent('mms-society:server:ToggleBlip',function(job,NewStatus)
+    local src = source
+    MySQL.update('UPDATE `mms_society` SET blipactive = ? WHERE name = ?',{NewStatus, job})
+    for h,v in ipairs(GetPlayers()) do
+        TriggerClientEvent('mms-society:client:updateplayerdata',v)
+    end
+    VORPcore.NotifyRightTip(src, _U('ToggledBlipStatus'),5000)
+end)
+
+-- Update Blip
+
+RegisterServerEvent('mms-society:server:UpdateBlip',function(job,InputBlipName,InputBlipSprite,InputBlipColor)
+    local src = source
+    if InputBlipName ~= "" then
+        MySQL.update('UPDATE `mms_society` SET blipname = ? WHERE name = ?',{InputBlipName, job})
+    end
+    if InputBlipSprite ~= "" then
+        MySQL.update('UPDATE `mms_society` SET bliphash = ? WHERE name = ?',{InputBlipSprite, job})
+    end
+    if InputBlipColor ~= "" then
+        MySQL.update('UPDATE `mms_society` SET blipcolor = ? WHERE name = ?',{InputBlipColor, job})
+    end
+    for h,v in ipairs(GetPlayers()) do
+        TriggerClientEvent('mms-society:client:updateplayerdata',v)
+    end
+    VORPcore.NotifyRightTip(src, _U('ToggledBlipStatus'),5000)
+end)

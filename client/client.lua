@@ -4,6 +4,7 @@ local FeatherMenu =  exports['feather-menu'].initiate()
 
 
 ------ LOCALS
+local MyJob = nil
 local LedgerOpen = false
 local RanksManage = false
 local PlayerManage = false
@@ -15,7 +16,7 @@ local GetSendBills = false
 local ConfirmSiteOpen = false
 local GetRecivedBills = false
 local DeleteJobMenu = false
-
+local BlipActiveText = ''
 local SocietyBlips = {}
 
 
@@ -66,6 +67,7 @@ AddEventHandler('mms-society:client:recieveuserdata',function(identifier,charide
 
     TriggerEvent('mms-society:client:CreateMenu',job,jobGrade,jobLabel,societyjobs,societyranks) -- Create Menu Part
     TriggerEvent('mms-society:client:CreateBossAndStorage',job,jobGrade,jobLabel,societyjobs,societyranks)  -- Create BossMenu and Storage
+    TriggerEvent('mms-society:client:CreateSocietyBlips',societyjobs)
 end)
 
 
@@ -344,6 +346,11 @@ end)
 
 RegisterNetEvent('mms-society:client:CreateMenu')
 AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,societyjobs,societyranks)
+    for h,v in ipairs(societyjobs) do
+        if job == v.name then
+            MyJob = v
+        end
+    end
     for h,v in ipairs(societyranks) do
         if job == v.name and jobGrade == v.rank then
             if v.isboss == 1 then
@@ -476,6 +483,16 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
         },
     }, function()
         TriggerEvent('mms-society:client:getranks')
+    end)
+    BossMenuPage1:RegisterElement('button', {
+        label =  _U('BlipManagement'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BossMenuPage7.RouteTo()
     end)
     end
     if ImCash or ImBoss then
@@ -741,6 +758,143 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
         }
     })
     BossMenuPage4:RegisterElement('line', {
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+
+    ------------------------------------------------------
+    ---------------- Boss Menu Seite 7 -------------------
+    ------------------------------------------------------
+    if MyJob.blipactive == 1 then
+        BlipActiveText = _U('Yes')
+    else
+        BlipActiveText = _U('No')
+    end
+    if Config.Debug then
+        print(MyJob.blipname)
+        print(MyJob.bliphash)
+        print(MyJob.blipcolor)
+        print(MyJob.blipactive)
+    end
+    BossMenuPage7 = BossMenu:RegisterPage('seite7')
+    BossMenuPage7:RegisterElement('header', {
+        value = _U('BlipMenuHeader'),
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BossMenuPage7:RegisterElement('line', {
+        slot = 'header',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    InviteText = BossMenuPage7:RegisterElement('textdisplay', {
+        value = _U('CurrentBlip') .. BlipActiveText .. _U('BlipSprite') .. MyJob.bliphash .. _U('BlipColor') .. MyJob.blipcolor .. _U('BlipName') .. MyJob.blipname,
+        style = {
+            ['font-size'] = '20px',
+            ['font-weight'] = 'bold',
+            ['color'] = 'orange',
+            
+        }
+    })
+    BossMenuPage7:RegisterElement('button', {
+        label =  _U('ToggleBlipButton'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        local NewStatus = nil
+        if MyJob.blipactive == 1 then
+            NewStatus = 0
+        else
+            NewStatus = 1
+        end
+        TriggerServerEvent('mms-society:server:ToggleBlip',job,NewStatus)
+    end)
+    local InputBlipName = ''
+    BossMenuPage7:RegisterElement('input', {
+        label = _U('InputBlipName'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        InputBlipName = data.value
+    end)
+    local InputBlipSprite = ''
+    BossMenuPage7:RegisterElement('input', {
+        label = _U('InputBlipSprite'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        InputBlipSprite = data.value
+    end)
+    local InputBlipColor = ''
+    BossMenuPage7:RegisterElement('input', {
+        label = _U('InputBlipColor'),
+        placeholder = "",
+        persist = false,
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function(data)
+        InputBlipColor = data.value
+    end)
+    BossMenuPage7:RegisterElement('button', {
+        label =  _U('UpdateBlipButton'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        TriggerServerEvent('mms-society:server:UpdateBlip',job,InputBlipName,InputBlipSprite,InputBlipColor)
+        BossMenuPage1:RouteTo()
+    end)
+    BossMenuPage7:RegisterElement('button', {
+        label =  _U('Back'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BossMenuPage1:RouteTo()
+    end)
+    BossMenuPage7:RegisterElement('button', {
+        label =  _U('CloseBossMenu'),
+        style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        BossMenu:Close({})
+    end)
+    BossMenuPage7:RegisterElement('subheader', {
+        value = _U('BossMenu'),
+        slot = 'footer',
+        style = {
+        ['color'] = 'orange',
+        }
+    })
+    BossMenuPage7:RegisterElement('line', {
         slot = 'footer',
         style = {
         ['color'] = 'orange',
@@ -1162,10 +1316,6 @@ RegisterNetEvent('mms-society:client:CreateBossAndStorage',function(job,jobGrade
 
     for h,v in ipairs (societyjobs)do
         if job == v.name then
-            if Config.ShowBossMenuBlip then
-                local BossBlip = BccUtils.Blips:SetBlip(v.label, Config.BlipSpriteBoss, 0.2, v.BossPosX,v.BossPosY,v.BossPosZ)
-                SocietyBlips[#SocietyBlips + 1] = BossBlip
-            end
             if Config.ShowStorageBlip then 
                 local StorageBlip = BccUtils.Blips:SetBlip(v.label, Config.BlipSpriteStorage, 0.2, v.StoragePosX,v.StoragePosY,v.StoragePosZ)
                 SocietyBlips[#SocietyBlips + 1] = StorageBlip
@@ -1203,6 +1353,18 @@ RegisterNetEvent('mms-society:client:CreateBossAndStorage',function(job,jobGrade
                     end
                 end
             end
+        end
+    end
+end)
+
+RegisterNetEvent('mms-society:client:CreateSocietyBlips')
+AddEventHandler('mms-society:client:CreateSocietyBlips',function(societyjobs)
+    for h,v in ipairs(societyjobs) do
+        if v.blipactive == 1 then
+            local CompanyBlip = BccUtils.Blips:SetBlip(v.blipname, v.bliphash, 1.0, v.BossPosX, v.BossPosY, v.BossPosZ)
+            local blipModifier = BccUtils.Blips:AddBlipModifier(CompanyBlip, v.blipcolor)
+            blipModifier:ApplyModifier()
+            SocietyBlips[#SocietyBlips + 1] = CompanyBlip
         end
     end
 end)

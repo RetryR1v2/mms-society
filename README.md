@@ -37,6 +37,12 @@
 - 1.1.6 Reworked JobCreator
 - Added Fuction to Delete the Job from Database
 - Carefull Deleting an Job Deletes All Ranks and Cleares the Storage and Created Bills.
+- 1.1.7 
+- Added Blip Management.
+- Removed BossMenu Blip from Config.
+- Option to Toggle Blip
+- Everything can be set Ingame by Boss
+- Blip Colors = BLIP_MODIFIER_MP_COLOR_1 - BLIP_MODIFIER_MP_COLOR_32
 
 # installation 
 
@@ -59,6 +65,14 @@
     ENGINE=InnoDB
     AUTO_INCREMENT=6
     ;
+
+- if you Update from 1.1.6 or Lower Run SQL code
+
+ALTER TABLE `mms_society`
+ADD COLUMN `blipactive` INT(11) NULL DEFAULT NULL,
+ADD COLUMN `bliphash` VARCHAR(50) NULL DEFAULT 'Keiner' COLLATE 'utf8mb3_general_ci',
+ADD COLUMN `blipname` VARCHAR(50) NULL DEFAULT 'Keiner' COLLATE 'utf8mb3_general_ci',
+ADD COLUMN `blipcolor` VARCHAR(50) NULL DEFAULT 'Keiner' COLLATE 'utf8mb3_general_ci';
 
 
 # Required

@@ -27,8 +27,6 @@ Config.JobCreatorCommand = 'Jobcreator'
 -- Boss Menü Command
 
 Config.BossMenuCommand = 'BossMenu'
-Config.ShowBossMenuBlip = true
-Config.BlipSpriteBoss = 'blip_shop_store'
 
 -- Storage
 Config.ShowStorageBlip = true
