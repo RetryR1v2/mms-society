@@ -43,6 +43,8 @@
 - Option to Toggle Blip
 - Everything can be set Ingame by Boss
 - Blip Colors = BLIP_MODIFIER_MP_COLOR_1 - BLIP_MODIFIER_MP_COLOR_32
+- 1.1.8 
+- Fixed MyJob Error on Start
 
 # installation 
 

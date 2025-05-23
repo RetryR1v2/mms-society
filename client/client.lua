@@ -22,7 +22,7 @@ local SocietyBlips = {}
 
 RegisterNetEvent('vorp:SelectedCharacter')
 AddEventHandler('vorp:SelectedCharacter', function()
-    Citizen.Wait(5000)
+    Citizen.Wait(15000)
     TriggerServerEvent('mms-society:server:getplayerdata')
 end)
 
@@ -46,13 +46,13 @@ end)
 RegisterNetEvent('mms-society:client:recieveuserdata')
 AddEventHandler('mms-society:client:recieveuserdata',function(identifier,charidentifier,firstname,lastname,job,jobGrade,jobLabel,group,societyjobs,societyranks)
     --- CHECK IF ADMIN TO CREATE JOBS
-        RegisterCommand(Config.JobCreatorCommand, function()
-            if group == Config.AdminGroup then
-                JobCreator:Open({
-                    startupPage = JobCreatorPage1,
-                })
-            end
-        end)
+    RegisterCommand(Config.JobCreatorCommand, function()
+        if group == Config.AdminGroup then
+            JobCreator:Open({
+                startupPage = JobCreatorPage1,
+            })
+        end
+    end)
     ---  Boss Menu To Set Locations and Create Ranks / Invite Player
 
     RegisterCommand(Config.BossMenuCommand, function()
@@ -60,7 +60,7 @@ AddEventHandler('mms-society:client:recieveuserdata',function(identifier,charide
             if job == v.name and jobGrade == v.rank and v.isboss == 1 then
                 BossMenu:Open({
                 startupPage = BossMenuPage1,
-                 })
+                })
             end
         end
     end)
@@ -767,140 +767,141 @@ AddEventHandler('mms-society:client:CreateMenu',function (job,jobGrade,jobLabel,
     ------------------------------------------------------
     ---------------- Boss Menu Seite 7 -------------------
     ------------------------------------------------------
-    if MyJob.blipactive == 1 then
-        BlipActiveText = _U('Yes')
-    else
-        BlipActiveText = _U('No')
-    end
-    if Config.Debug then
-        print(MyJob.blipname)
-        print(MyJob.bliphash)
-        print(MyJob.blipcolor)
-        print(MyJob.blipactive)
-    end
-    BossMenuPage7 = BossMenu:RegisterPage('seite7')
-    BossMenuPage7:RegisterElement('header', {
-        value = _U('BlipMenuHeader'),
-        slot = 'header',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    BossMenuPage7:RegisterElement('line', {
-        slot = 'header',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    InviteText = BossMenuPage7:RegisterElement('textdisplay', {
-        value = _U('CurrentBlip') .. BlipActiveText .. _U('BlipSprite') .. MyJob.bliphash .. _U('BlipColor') .. MyJob.blipcolor .. _U('BlipName') .. MyJob.blipname,
-        style = {
-            ['font-size'] = '20px',
-            ['font-weight'] = 'bold',
-            ['color'] = 'orange',
-            
-        }
-    })
-    BossMenuPage7:RegisterElement('button', {
-        label =  _U('ToggleBlipButton'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        local NewStatus = nil
+    if MyJob ~= nil then
         if MyJob.blipactive == 1 then
-            NewStatus = 0
+            BlipActiveText = _U('Yes')
         else
-            NewStatus = 1
+            BlipActiveText = _U('No')
         end
-        TriggerServerEvent('mms-society:server:ToggleBlip',job,NewStatus)
-    end)
-    local InputBlipName = ''
-    BossMenuPage7:RegisterElement('input', {
-        label = _U('InputBlipName'),
-        placeholder = "",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        InputBlipName = data.value
-    end)
-    local InputBlipSprite = ''
-    BossMenuPage7:RegisterElement('input', {
-        label = _U('InputBlipSprite'),
-        placeholder = "",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        InputBlipSprite = data.value
-    end)
-    local InputBlipColor = ''
-    BossMenuPage7:RegisterElement('input', {
-        label = _U('InputBlipColor'),
-        placeholder = "",
-        persist = false,
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function(data)
-        InputBlipColor = data.value
-    end)
-    BossMenuPage7:RegisterElement('button', {
-        label =  _U('UpdateBlipButton'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        TriggerServerEvent('mms-society:server:UpdateBlip',job,InputBlipName,InputBlipSprite,InputBlipColor)
-        BossMenuPage1:RouteTo()
-    end)
-    BossMenuPage7:RegisterElement('button', {
-        label =  _U('Back'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        BossMenuPage1:RouteTo()
-    end)
-    BossMenuPage7:RegisterElement('button', {
-        label =  _U('CloseBossMenu'),
-        style = {
-        ['background-color'] = '#FF8C00',
-        ['color'] = 'orange',
-        ['border-radius'] = '6px'
-        },
-    }, function()
-        BossMenu:Close({})
-    end)
-    BossMenuPage7:RegisterElement('subheader', {
-        value = _U('BossMenu'),
-        slot = 'footer',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-    BossMenuPage7:RegisterElement('line', {
-        slot = 'footer',
-        style = {
-        ['color'] = 'orange',
-        }
-    })
-
+        if Config.Debug then
+            print(MyJob.blipname)
+            print(MyJob.bliphash)
+            print(MyJob.blipcolor)
+            print(MyJob.blipactive)
+        end
+        BossMenuPage7 = BossMenu:RegisterPage('seite7')
+        BossMenuPage7:RegisterElement('header', {
+            value = _U('BlipMenuHeader'),
+            slot = 'header',
+            style = {
+            ['color'] = 'orange',
+            }
+        })
+        BossMenuPage7:RegisterElement('line', {
+            slot = 'header',
+            style = {
+            ['color'] = 'orange',
+            }
+        })
+        InviteText = BossMenuPage7:RegisterElement('textdisplay', {
+            value = _U('CurrentBlip') .. BlipActiveText .. _U('BlipSprite') .. MyJob.bliphash .. _U('BlipColor') .. MyJob.blipcolor .. _U('BlipName') .. MyJob.blipname,
+            style = {
+                ['font-size'] = '20px',
+                ['font-weight'] = 'bold',
+                ['color'] = 'orange',
+                
+            }
+        })
+        BossMenuPage7:RegisterElement('button', {
+            label =  _U('ToggleBlipButton'),
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function()
+            local NewStatus = nil
+            if MyJob.blipactive == 1 then
+                NewStatus = 0
+            else
+                NewStatus = 1
+            end
+            TriggerServerEvent('mms-society:server:ToggleBlip',job,NewStatus)
+        end)
+        local InputBlipName = ''
+        BossMenuPage7:RegisterElement('input', {
+            label = _U('InputBlipName'),
+            placeholder = "",
+            persist = false,
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function(data)
+            InputBlipName = data.value
+        end)
+        local InputBlipSprite = ''
+        BossMenuPage7:RegisterElement('input', {
+            label = _U('InputBlipSprite'),
+            placeholder = "",
+            persist = false,
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function(data)
+            InputBlipSprite = data.value
+        end)
+        local InputBlipColor = ''
+        BossMenuPage7:RegisterElement('input', {
+            label = _U('InputBlipColor'),
+            placeholder = "",
+            persist = false,
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function(data)
+            InputBlipColor = data.value
+        end)
+        BossMenuPage7:RegisterElement('button', {
+            label =  _U('UpdateBlipButton'),
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function()
+            TriggerServerEvent('mms-society:server:UpdateBlip',job,InputBlipName,InputBlipSprite,InputBlipColor)
+            BossMenuPage1:RouteTo()
+        end)
+        BossMenuPage7:RegisterElement('button', {
+            label =  _U('Back'),
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function()
+            BossMenuPage1:RouteTo()
+        end)
+        BossMenuPage7:RegisterElement('button', {
+            label =  _U('CloseBossMenu'),
+            style = {
+            ['background-color'] = '#FF8C00',
+            ['color'] = 'orange',
+            ['border-radius'] = '6px'
+            },
+        }, function()
+            BossMenu:Close({})
+        end)
+        BossMenuPage7:RegisterElement('subheader', {
+            value = _U('BossMenu'),
+            slot = 'footer',
+            style = {
+            ['color'] = 'orange',
+            }
+        })
+        BossMenuPage7:RegisterElement('line', {
+            slot = 'footer',
+            style = {
+            ['color'] = 'orange',
+            }
+        })
+    end
 end)
 
 -- Leave Job
