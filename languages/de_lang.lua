@@ -110,4 +110,6 @@ Locales["de_lang"] = {
     UpdateBlipButton = 'Blip Aktualisieren',
     ToggleBlipButton = 'Blip Zeigen.',
     ToggledBlipStatus = 'Blip Aktualisiert.',
+    -- NEW
+    NoNegativeNumbers = 'Keine Negativen Zahlen',
 }

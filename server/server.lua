@@ -266,16 +266,20 @@ RegisterServerEvent('mms-society:server:Withdraw',function (InputAmount)
     local Character = VORPcore.getUser(src).getUsedCharacter
     local job = Character.job
     local ToNumberAmount = tonumber(InputAmount)
-    local LedgerResult = MySQL.query.await("SELECT * FROM mms_society WHERE name=@name", { ["@name"] = job})
-    if #LedgerResult > 0 then
-        local OldBalance = LedgerResult[1].balance
-        local NewBalance = OldBalance - ToNumberAmount
-        if OldBalance >= ToNumberAmount then
-            Character.addCurrency(0,ToNumberAmount)
-            MySQL.update('UPDATE `mms_society` SET balance = ? WHERE name = ?',{NewBalance, job})
-            VORPcore.NotifyRightTip(src, ToNumberAmount .. _U('Withdrawn'),  5000)
-        else
-            VORPcore.NotifyRightTip(src, _U('NotEnoghMoney'),  5000)
+    if ToNumberAmount <= 0 then
+        VORPcore.NotifyRightTip(src, _U('NoNegativeNumbers'),  5000)
+    else
+        local LedgerResult = MySQL.query.await("SELECT * FROM mms_society WHERE name=@name", { ["@name"] = job})
+        if #LedgerResult > 0 then
+            local OldBalance = LedgerResult[1].balance
+            local NewBalance = OldBalance - ToNumberAmount
+            if OldBalance >= ToNumberAmount then
+                Character.addCurrency(0,ToNumberAmount)
+                MySQL.update('UPDATE `mms_society` SET balance = ? WHERE name = ?',{NewBalance, job})
+                VORPcore.NotifyRightTip(src, ToNumberAmount .. _U('Withdrawn'),  5000)
+            else
+                VORPcore.NotifyRightTip(src, _U('NotEnoghMoney'),  5000)
+            end
         end
     end
 end)
@@ -285,17 +289,21 @@ RegisterServerEvent('mms-society:server:Deposit',function (InputAmount)
     local Character = VORPcore.getUser(src).getUsedCharacter
     local job = Character.job
     local ToNumberAmount = tonumber(InputAmount)
-    local MyMoney = Character.money
-    local LedgerResult = MySQL.query.await("SELECT * FROM mms_society WHERE name=@name", { ["@name"] = job})
-    if #LedgerResult > 0 then
-        local OldBalance = LedgerResult[1].balance
-        local NewBalance = OldBalance + ToNumberAmount
-        if MyMoney >= ToNumberAmount then
-            Character.removeCurrency(0,ToNumberAmount)
-            MySQL.update('UPDATE `mms_society` SET balance = ? WHERE name = ?',{NewBalance, job})
-            VORPcore.NotifyRightTip(src, ToNumberAmount .. _U('Deposited'),  5000)
-        else
-            VORPcore.NotifyRightTip(src, _U('NotEnoghMoney'),  5000)
+    if ToNumberAmount <= 0 then
+        VORPcore.NotifyRightTip(src, _U('NoNegativeNumbers'),  5000)
+    else
+        local MyMoney = Character.money
+        local LedgerResult = MySQL.query.await("SELECT * FROM mms_society WHERE name=@name", { ["@name"] = job})
+        if #LedgerResult > 0 then
+            local OldBalance = LedgerResult[1].balance
+            local NewBalance = OldBalance + ToNumberAmount
+            if MyMoney >= ToNumberAmount then
+                Character.removeCurrency(0,ToNumberAmount)
+                MySQL.update('UPDATE `mms_society` SET balance = ? WHERE name = ?',{NewBalance, job})
+                VORPcore.NotifyRightTip(src, ToNumberAmount .. _U('Deposited'),  5000)
+            else
+                VORPcore.NotifyRightTip(src, _U('NotEnoghMoney'),  5000)
+            end
         end
     end
 end)
