@@ -356,7 +356,16 @@ end)
 
 RegisterServerEvent('mms-society:server:FireEmplyoer',function(InputID)
     local src = source
-    if InputID ~= "" then
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local SrcCharID = Character.charIdentifier
+    local ImBoss = false
+    local SrcGetEmployerData = MySQL.query.await("SELECT * FROM characters WHERE charidentifier=@charidentifier", { ["@charidentifier"] = SrcCharID})
+    if #SrcGetEmployerData > 0 then
+        if SrcGetEmployerData[1].IsBoss == 1 then
+            ImBoss = true
+        end
+    end
+    if ImBoss and InputID ~= "" then
         local CharID = tonumber(InputID)
         local GetEmployerData = MySQL.query.await("SELECT * FROM characters WHERE charidentifier=@charidentifier", { ["@charidentifier"] = CharID})
         if #GetEmployerData > 0 then
@@ -377,7 +386,7 @@ RegisterServerEvent('mms-society:server:FireEmplyoer',function(InputID)
             end
             VORPcore.NotifyRightTip(src,_U('FiredEmployer'),5000)
         end
-    else
+    elseif InputID == "" then
         VORPcore.NotifyRightTip(src, 'Wrong Input', 5000)
     end
 end)
